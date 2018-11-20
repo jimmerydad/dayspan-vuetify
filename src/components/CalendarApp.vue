@@ -1,156 +1,156 @@
 <template>
-<div class="ds-expand ds-calendar-app">
+  <div class="ds-expand ds-calendar-app">
+    <v-layout
+      row
+      wrap>
+      <v-flex xs2>
+        <slot
+          v-bind="{setToday, todayDate, calendar}"
+          name="today">
 
-  <v-navigation-drawer fixed app
-    v-model="drawer"
-    :clipped="$vuetify.breakpoint.lgAndUp">
+          <v-tooltip bottom>
+            <v-btn
+              slot="activator"
+              :icon="$vuetify.breakpoint.smAndDown"
+              class="ds-skinny-button"
+              depressed
+              @click="setToday">
 
-    <slot name="drawerTop"></slot>
+              <span v-if="$vuetify.breakpoint.mdAndUp">{{ labels.today }}</span>
+              <v-icon v-else>{{ labels.todayIcon }}</v-icon>
 
-    <slot name="drawerPicker" :calendar="calendar" :picked="rebuild">
-      <div class="pa-3" v-if="calendar">
-        <ds-day-picker :span="calendar.span" @picked="rebuild"></ds-day-picker>
-      </div>
-    </slot>
+            </v-btn>
+            <span>{{ todayDate }}</span>
+          </v-tooltip>
 
-    <slot name="drawerBottom"></slot>
+        </slot>
+      </v-flex>
+      <v-flex
+        xs4
+        class="text-xs-right">
+        <slot
+          v-bind="{prev, prevLabel, calendar}"
+          name="prev">
 
-  </v-navigation-drawer>
+          <v-btn
+            slot="activator"
+            icon
+            depressed
+            class="ds-light-forecolor ds-skinny-button"
+            @click="prev" >
+            <v-icon>keyboard_arrow_left</v-icon>
+          </v-btn>
 
-  <v-toolbar app flat fixed
-    class="ds-app-calendar-toolbar"
-    color="white"
-    :clipped-left="$vuetify.breakpoint.lgAndUp">
+        </slot>
+        <slot
+          v-bind="{next, nextLabel, calendar}"
+          name="next">
 
-    <v-toolbar-title class="ml-0" :style="toolbarStyle">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <span class="hidden-sm-and-down">
+          <v-btn
+            slot="activator"
+            icon
+            depressed
+            class="ds-light-forecolor ds-skinny-button"
+            @click="next">
+            <v-icon>keyboard_arrow_right</v-icon>
+          </v-btn>
 
-        <slot name="title" :calendar="calendar"></slot>
+        </slot>
+      </v-flex>
+      <v-flex xs3>
+        <slot
+          v-bind="{summary, calendar}"
+          name="summary">
 
-      </span>
-    </v-toolbar-title>
+          <h1 class="title ds-light-forecolor pt-3">
+            {{ summary }}
+          </h1>
 
-    <slot name="today" v-bind="{setToday, todayDate, calendar}">
+        </slot>
+      </v-flex>
+      <v-flex
+        xs3
+        class="text-xs-right">
+        <slot
+          v-bind="{currentType, types}"
+          name="view">
 
-      <v-tooltip bottom>
-        <v-btn slot="activator"
-          class="ds-skinny-button"
-          depressed
-          :icon="$vuetify.breakpoint.smAndDown"
-          @click="setToday">
+          <v-menu>
+            <v-btn
+              slot="activator"
+              depressed>
+              <span v-if="$vuetify.breakpoint.smAndDown">{{ currentType.shortcut }}</span>
+              <span v-else>{{ currentType.label }}</span>
+              <v-icon>arrow_drop_down</v-icon>
+            </v-btn>
+            <v-list>
+              <v-list-tile
+                v-for="type in types"
+                :key="type.id"
+                @click="currentType = type">
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ type.label }}</v-list-tile-title>
+                </v-list-tile-content>
+                <v-list-tile-action>{{ type.shortcut }}</v-list-tile-action>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
 
-          <span v-if="$vuetify.breakpoint.mdAndUp">{{ labels.today }}</span>
-          <v-icon v-else>{{ labels.todayIcon }}</v-icon>
-
-        </v-btn>
-        <span>{{ todayDate }}</span>
-      </v-tooltip>
-
-    </slot>
-
-    <slot name="prev" v-bind="{prev, prevLabel, calendar}">
-
-      <v-tooltip bottom>
-        <v-btn slot="activator"
-          icon depressed class="ds-light-forecolor ds-skinny-button"
-          @click="prev" >
-          <v-icon>keyboard_arrow_left</v-icon>
-        </v-btn>
-        <span>{{ prevLabel }}</span>
-      </v-tooltip>
-
-    </slot>
-
-    <slot name="next" v-bind="{next, nextLabel, calendar}">
-
-      <v-tooltip bottom>
-        <v-btn slot="activator"
-          icon depressed
-          class="ds-light-forecolor ds-skinny-button"
-          @click="next">
-          <v-icon>keyboard_arrow_right</v-icon>
-        </v-btn>
-        <span>{{ nextLabel }}</span>
-      </v-tooltip>
-
-    </slot>
-
-    <slot name="summary" v-bind="{summary, calendar}">
-
-      <h1 class="title ds-light-forecolor">
-        {{ summary }}
-      </h1>
-
-    </slot>
-
-    <v-spacer></v-spacer>
-
-    <slot name="view" v-bind="{currentType, types}">
-
-      <v-menu>
-        <v-btn flat slot="activator">
-          {{ currentType.label }}
-          <v-icon>arrow_drop_down</v-icon>
-        </v-btn>
-        <v-list>
-          <v-list-tile v-for="type in types"
-            :key="type.id"
-            @click="currentType = type">
-            <v-list-tile-content>
-              <v-list-tile-title>{{ type.label }}</v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action>{{ type.shortcut }}</v-list-tile-action>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
-
-    </slot>
-
-    <slot name="menuRight"></slot>
-
-  </v-toolbar>
-  <v-content class="ds-expand">
-    <v-container fluid fill-height class="ds-calendar-container">
+        </slot>
+      </v-flex>
+    </v-layout>
+    <v-container
+      fluid
+      fill-height
+      class="ds-calendar-container">
 
       <ds-gestures
         @swipeleft="next"
         @swiperight="prev">
 
-        <div v-if="currentType.schedule" class="ds-expand">
+        <div
+          v-if="currentType.schedule"
+          class="ds-expand">
 
-          <slot name="calendarAppAgenda" v-bind="{$scopedSlots, $listeners, calendar, add, edit, viewDay}">
+          <slot
+            v-bind="{$scopedSlots, $listeners, calendar, add, edit, viewDay}"
+            name="calendarAppAgenda">
 
             <ds-agenda
               v-bind="{$scopedSlots}"
-              v-on="$listeners"
               :read-only="readOnly"
               :calendar="calendar"
+              v-on="$listeners"
               @add="add"
               @edit="edit"
               @view-day="viewDay"
-            ></ds-agenda>
+            />
 
           </slot>
 
         </div>
 
-        <div v-else class="ds-expand">
+        <div
+          v-else
+          class="ds-expand">
 
-          <slot name="calendarAppCalendar" v-bind="{$scopedSlots, $listeners, calendar, add, addAt, edit, viewDay, handleAdd, handleMove}">
+          <slot
+            v-bind="{$scopedSlots, $listeners, calendar, add, addAt, edit, viewDay, handleAdd, handleMove}"
+            name="calendarAppCalendar">
 
-            <ds-calendar ref="calendar"
+            <ds-calendar
+              ref="calendar"
               v-bind="{$scopedSlots}"
-              v-on="$listeners"
               :calendar="calendar"
               :read-only="readOnly"
+              v-on="$listeners"
               @add="add"
               @add-at="addAt"
               @edit="edit"
               @view-day="viewDay"
               @added="handleAdd"
               @moved="handleMove"
-            ></ds-calendar>
+            />
 
           </slot>
 
@@ -158,28 +158,36 @@
 
       </ds-gestures>
 
-      <slot name="calendarAppEventDialog" v-bind="{$scopedSlots, $listeners, calendar, eventFinish}">
+      <slot
+        v-bind="{$scopedSlots, $listeners, calendar, eventFinish}"
+        name="calendarAppEventDialog">
 
-        <ds-event-dialog ref="eventDialog"
+        <ds-event-dialog
+          ref="eventDialog"
           v-bind="{$scopedSlots}"
-          v-on="$listeners"
           :calendar="calendar"
           :read-only="readOnly"
+          v-on="$listeners"
           @saved="eventFinish"
           @actioned="eventFinish"
-        ></ds-event-dialog>
+        />
 
       </slot>
 
-      <slot name="calendarAppOptions" v-bind="{optionsVisible, optionsDialog, options, chooseOption}">
+      <slot
+        v-bind="{optionsVisible, optionsDialog, options, chooseOption}"
+        name="calendarAppOptions">
 
-        <v-dialog ref="optionsDialog"
+        <v-dialog
+          ref="optionsDialog"
           v-model="optionsVisible"
           v-bind="optionsDialog"
           :fullscreen="$dayspan.fullscreenDialogs">
           <v-list>
             <template v-for="option in options">
-              <v-list-tile :key="option.text" @click="chooseOption( option )">
+              <v-list-tile
+                :key="option.text"
+                @click="chooseOption( option )">
                 {{ option.text }}
               </v-list-tile>
             </template>
@@ -188,19 +196,28 @@
 
       </slot>
 
-      <slot name="calendarAppPrompt" v-bind="{promptVisible, promptDialog, promptQuestion, choosePrompt}">
+      <slot
+        v-bind="{promptVisible, promptDialog, promptQuestion, choosePrompt}"
+        name="calendarAppPrompt">
 
-        <v-dialog ref="promptDialog"
+        <v-dialog
+          ref="promptDialog"
           v-model="promptVisible"
           v-bind="promptDialog">
           <v-card>
             <v-card-title>{{ promptQuestion }}</v-card-title>
             <v-card-actions>
-              <v-btn color="primary" flat @click="choosePrompt( true )">
+              <v-btn
+                color="primary"
+                flat
+                @click="choosePrompt( true )">
                 {{ labels.promptConfirm }}
               </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn color="secondary" flat @click="choosePrompt( false )">
+              <v-spacer/>
+              <v-btn
+                color="secondary"
+                flat
+                @click="choosePrompt( false )">
                 {{ labels.promptCancel }}
               </v-btn>
             </v-card-actions>
@@ -209,14 +226,19 @@
 
       </slot>
 
-      <slot name="calendarAppAdd" v-bind="{allowsAddToday, addToday}">
+      <slot
+        v-bind="{allowsAddToday, addToday}"
+        name="calendarAppAdd">
 
         <v-fab-transition v-if="!readOnly">
           <v-btn
+            v-model="allowsAddToday"
             class="ds-add-event-today"
             color="primary"
-            fixed bottom right fab
-            v-model="allowsAddToday"
+            fixed
+            bottom
+            right
+            fab
             @click="addToday">
             <v-icon>add</v-icon>
           </v-btn>
@@ -224,11 +246,12 @@
 
       </slot>
 
-      <slot name="containerInside" v-bind="{events, calendar}"></slot>
+      <slot
+        v-bind="{events, calendar}"
+        name="containerInside"/>
 
     </v-container>
-  </v-content>
-</div>
+  </div>
 </template>
 
 <script>
