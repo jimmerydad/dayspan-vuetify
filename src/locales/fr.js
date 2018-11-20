@@ -77,7 +77,7 @@ export default {
         { label: '4 jours' }
       ],
       formats: {
-        today: 'dddd, MMMM D',
+        today: 'dddd D MMMM',
         xs: 'MMM'
       },
       labels: {
